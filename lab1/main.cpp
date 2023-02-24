@@ -3,8 +3,6 @@ using namespace std;
 
 #define ADMIN_PASSWORD "nits@2021"
 
-//Checker Functions
-unordered_map<string,int>hostel,student;
 
 typedef struct food{
     string breakfast;
@@ -111,6 +109,8 @@ class Student{
     public:
         Student(string, int);
         bool onCampus();
+        string getname();
+        int getid();
         int rateperday();
         void applyLeave();
         void returnLeave();
@@ -133,6 +133,21 @@ Student:: Student(string hostelName, int gend){
     hostel = hostelName;
     cout<<"Enter roomId-->  ";
     cin>>roomId;
+    fstream file;
+    file.open("data/students.txt", ios::in | ios::out);
+    file << "Name: "<<name << endl;
+    file << "Scholar ID: "<<scholarid << endl;
+    file <<"roomId: "<<roomId<< endl;
+    file <<"Hostel: "<<hostelName << endl;
+    file.close();
+}
+
+string Student::getname(){
+    return name;
+}
+
+int Student::getid(){
+    return scholarid;
 }
 
 bool Student::onCampus(){
@@ -283,7 +298,12 @@ class Hostel{
             }
         }
 
+        vector<Student> getStudent(){
+            return students;
+        }
+
 };
+
 
 void displayOptions(int i){
     //For main choice
@@ -370,20 +390,35 @@ void Hostel_Manager(vector<Hostel>& h){
 }
 
 
-void Complaint(){
-    string name, id, complaint;
+void Complaint(vector<Hostel>h){
+    string name, complaint;
+    int id;
     cout<<"Enter name: \n";
     cin>>name;
     cout<<"Enter Scholar ID: \n";
     cin>>id;
+    bool found = false;
+    for(auto& hostel: h){
+        vector<Student>students = hostel.getStudent();
+        for(auto& student: students){
+            if(student.getname() == name && student.getid() == id){
+                found = true;
+                break;
+            }
+        }
+    }
+    if(!found){
+        cout<<"No such student found.\n";
+        return;
+    }
     cin.clear();
     fflush(stdin);
     getline(cin, complaint);
     fstream file;
     file.open("data/complain.txt", ios::in | ios::out);
-    file << name << endl;
-    file << id << endl;
-    file << complaint << endl;
+    file << "Name: "<<name << endl;
+    file << "Scholar ID: "<<id << endl;
+    file <<"Complaint: "<<complaint << endl;
     file.close();
 
 }
@@ -392,6 +427,7 @@ void Complaint(){
 int main(){
     cout<<"<---Welcome to Mess Management System--->\n";
     int a = -1;
+    vector<Hostel>h;
     while(true){
         cout<<"Enter your position->\n";
         cout<<"1. Admin.\n";
@@ -412,7 +448,6 @@ int main(){
                 continue;
             }
             cout<<"You are logged in as an admin.\n";
-            vector<Hostel>h;
             int k;
             bool process = true;
             while(process){
@@ -448,7 +483,7 @@ int main(){
                     case 0:
                         break;
                     case 1:
-                        Complaint();
+                        Complaint(h);
                         break;
                     case 2:
                         process = false;
