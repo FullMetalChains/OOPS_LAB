@@ -104,14 +104,14 @@ class FoodItems{
 class Student{
     private:
         string name, hostel;
-        int gender,bhmContribuion = 19500,roomId,rate, scholarid;
+        int gender,bhmContribuion = 19500,roomId, scholarid;
         bool oncampus = true;
     public:
         Student(string, int);
         bool onCampus();
         string getname();
         int getid();
-        int rateperday();
+        int rate();
         void applyLeave();
         void returnLeave();
         void display();
@@ -154,8 +154,8 @@ bool Student::onCampus(){
     return oncampus;
 }
 
-int Student:: rateperday(){
-    return rate;
+int Student:: rate(){
+    return bhmContribuion;
 }
 
 void Student:: applyLeave(){
@@ -186,6 +186,7 @@ void Student:: launchComplaint(){
 class mmc{
     private:
         string hostelName, warden, supervisor;
+        vector<string>members;
         int budget;
     public:
         mmc(string hosname){
@@ -194,11 +195,25 @@ class mmc{
             cin>>warden;
             cout<<"Enter the name of supervisor--> ";
             cin>>supervisor;
+            int n;
+            cout<<"Enter the number of members--> ";
+            cin>>n;
+            for(int i =0;i<n;i++){
+                cout<<"Enter member name--> ";
+                string m;
+                cin>>m;
+                members.push_back(m);
+            }
         }
 
         void display(){
             cout<<"Warden: "<<warden<<endl;
             cout<<"Supervisor: "<<supervisor<<endl;
+            int i = 0;
+            cout<<"Members are--> \n";
+            for(auto& member: members){
+                cout<<"#"<<i<<" "<<member<<endl;
+            }
         }
 };
 
@@ -231,6 +246,8 @@ class Hostel{
         string name(){
             return hostelName;
         }
+
+
 
         void listStudents(){
             int i = 1;
@@ -283,6 +300,7 @@ class Hostel{
             else{
                 cout<<"This is a girls hostel\n";
             }
+            cout<<"Hostel mess bill is "<<MessBill<<endl;
         }
 
         bool createMessBill()
@@ -294,7 +312,7 @@ class Hostel{
                 {
                     continue;
                 }
-                MessBill+=student.rateperday();
+                MessBill+=student.rate();
             }
         }
 
@@ -326,6 +344,7 @@ void displayOptions(int i){
     }
     //For Student
     if(i == 2){
+        cout<<"Press 0 to apply leave."<<endl;
         cout<<"Press 1 to launch complaint."<<endl;
         cout<<"Press 2 to exit student portal."<<endl;
     }
@@ -386,6 +405,30 @@ void Hostel_Manager(vector<Hostel>& h){
             }
         }
 
+    }
+}
+
+void leave(vector<Hostel>h){
+    string name;
+    int id;
+    cout<<"Enter your name--> "<<endl;
+    cin>>name;
+    cout<<"Enter your id--> "<<endl;
+    cin>>id;
+    bool found = false;
+    for(auto& hostel: h){
+        vector<Student>students = hostel.getStudent();
+        for(auto& student: students){
+            if(student.getname() == name && student.getid() == id){
+                found = true;
+                student.applyLeave();
+                hostel.createMessBill();
+                break;
+            }
+        }
+    }
+    if(!found){
+        cout<<"Invalid ID"<<endl;
     }
 }
 
@@ -481,6 +524,7 @@ int main(){
                 cin>>k;
                 switch(k) {
                     case 0:
+                        leave(h);
                         break;
                     case 1:
                         Complaint(h);
