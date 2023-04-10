@@ -432,7 +432,6 @@ void leave(vector<Hostel>h){
     }
 }
 
-
 void Complaint(vector<Hostel>h){
     string name, complaint;
     int id;

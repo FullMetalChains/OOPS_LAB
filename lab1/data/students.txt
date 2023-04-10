@@ -1,6 +1,4 @@
-Name: Tushar
-Scholar ID: 21212
-roomId: 213
-Hostel: 8
-
-l: dfdfsf
+Name: Tushar_Dalmia
+Scholar ID: 2112146
+roomId: 8111
+Hostel: Hostel-8
